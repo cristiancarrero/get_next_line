@@ -17,9 +17,9 @@ static char	*ft_get_line(char *storage)
 	char	*line;
 	int		i;
 
-	i = 0;
-	if (!storage[0])
+	if (!storage || !storage[0])
 		return (NULL);
+	i = 0;
 	while (storage[i] && storage[i] != '\n')
 		i++;
 	if (storage[i] == '\n')
@@ -42,26 +42,30 @@ static char	*ft_get_line(char *storage)
 static char	*ft_read_file(int fd, char *storage)
 {
 	char	*buffer;
-	int		bytes_read;
+	ssize_t	bytes_read;
 
+	if (!storage)
+	{
+		storage = malloc(1);
+		if (!storage)
+			return (NULL);
+		storage[0] = '\0';
+	}
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
-		return (NULL);
+		return (free(storage), NULL);
 	bytes_read = 1;
-	while (bytes_read > 0 && (!storage || !ft_strchr(storage, '\n')))
+	while (bytes_read > 0 && !ft_strchr(storage, '\n'))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
-		{
-			free(buffer);
-			free(storage);
-			return (NULL);
-		}
+			return (free(buffer), free(storage), NULL);
 		buffer[bytes_read] = '\0';
 		storage = ft_strjoin(storage, buffer);
+		if (!storage)
+			return (free(buffer), NULL);
 	}
-	free(buffer);
-	return (storage);
+	return (free(buffer), storage);
 }
 
 char	*get_next_line(int fd)
@@ -81,6 +85,6 @@ char	*get_next_line(int fd)
 		storage[fd] = NULL;
 		return (NULL);
 	}
-	storage[fd] = ft_update_storage(storage[fd]);
+	storage[fd] = ft_clean_storage(storage[fd]);
 	return (line);
 }

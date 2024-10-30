@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: caguerre <caguerre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/13 18:40:01 by marvin            #+#    #+#             */
-/*   Updated: 2024/10/13 18:40:01 by marvin           ###   ########.fr       */
+/*   Created: 2024/01/01 00:00:00 by caguerre          #+#    #+#             */
+/*   Updated: 2024/01/01 00:00:00 by caguerre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@
 # endif
 
 char	*get_next_line(int fd);
-size_t	ft_strlen(char *s);
+char	*ft_strchr(const char *s, int c);
+size_t	ft_strlen(const char *s);
 char	*ft_strjoin(char *s1, char *s2);
-char	*ft_update_storage(char *storage);
+char	*ft_get_line(char *storage);
+char	*ft_process_storage(char *storage);
 
 #endif
