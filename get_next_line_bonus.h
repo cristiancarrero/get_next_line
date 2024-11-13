@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: your_username <your_email>                 +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/01 00:00:00 by your_username     #+#    #+#             */
-/*   Updated: 2024/01/01 00:00:00 by your_username    ###   ########.fr       */
+/*   Created: 2022/03/02 12:53:00 by gemartin          #+#    #+#             */
+/*   Updated: 2024/11/13 23:50:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,19 @@
 # include <unistd.h>
 # include <limits.h>
 
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
 # ifndef OPEN_MAX
-#  define OPEN_MAX 1024
+#  define OPEN_MAX 4096
 # endif
 
 char	*get_next_line(int fd);
+char	*ft_strchr(char *s, int c);
+char	*ft_substr(char *s, unsigned int start, size_t len);
+size_t	ft_strlen(char *s);
 char	*ft_strjoin(char *s1, char *s2);
-char	*ft_strchr(const char *s, int c);
-size_t	ft_strlen(const char *s);
-char	*ft_clean_storage(char *storage);
+char	*ft_free(char **str);
 
 #endif

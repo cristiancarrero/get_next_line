@@ -5,67 +5,75 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/13 19:47:22 by marvin            #+#    #+#             */
-/*   Updated: 2024/10/13 19:47:22 by marvin           ###   ########.fr       */
+/*   Created: 2022/03/02 12:42:12 by gemartin          #+#    #+#             */
+/*   Updated: 2024/11/13 23:49:25 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-static char	*ft_get_line(char *storage)
+static char	*clean_storage(char *storage)
+{
+	char	*new_storage;
+	char	*ptr;
+	int		len;
+
+	ptr = ft_strchr(storage, '\n');
+	if (!ptr)
+	{
+		new_storage = NULL;
+		return (ft_free(&storage));
+	}
+	else
+		len = (ptr - storage) + 1;
+	if (!storage[len])
+		return (ft_free(&storage));
+	new_storage = ft_substr(storage, len, ft_strlen(storage) - len);
+	ft_free(&storage);
+	if (!new_storage)
+		return (NULL);
+	return (new_storage);
+}
+
+static char	*new_line(char *storage)
 {
 	char	*line;
-	int		i;
+	char	*ptr;
+	int		len;
 
-	if (!storage || !storage[0])
-		return (NULL);
-	i = 0;
-	while (storage[i] && storage[i] != '\n')
-		i++;
-	if (storage[i] == '\n')
-		i++;
-	line = malloc(sizeof(char) * (i + 1));
+	ptr = ft_strchr(storage, '\n');
+	len = (ptr - storage) + 1;
+	line = ft_substr(storage, 0, len);
 	if (!line)
 		return (NULL);
-	i = 0;
-	while (storage[i] && storage[i] != '\n')
-	{
-		line[i] = storage[i];
-		i++;
-	}
-	if (storage[i] == '\n')
-		line[i++] = '\n';
-	line[i] = '\0';
 	return (line);
 }
 
-static char	*ft_read_file(int fd, char *storage)
+static char	*readbuf(int fd, char *storage)
 {
+	int		rid;
 	char	*buffer;
-	ssize_t	bytes_read;
 
-	if (!storage)
-	{
-		storage = malloc(1);
-		if (!storage)
-			return (NULL);
-		storage[0] = '\0';
-	}
+	rid = 1;
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
-		return (free(storage), NULL);
-	bytes_read = 1;
-	while (bytes_read > 0 && !ft_strchr(storage, '\n'))
+		return (ft_free(&storage));
+	buffer[0] = '\0';
+	while (rid > 0 && (!storage || !ft_strchr(storage, '\n')))
 	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
-			return (free(buffer), free(storage), NULL);
-		buffer[bytes_read] = '\0';
-		storage = ft_strjoin(storage, buffer);
-		if (!storage)
-			return (free(buffer), NULL);
+		rid = read(fd, buffer, BUFFER_SIZE);
+		if (rid > 0)
+		{
+			buffer[rid] = '\0';
+			storage = ft_strjoin(storage, buffer);
+			if (!storage)
+				break ;
+		}
 	}
-	return (free(buffer), storage);
+	free(buffer);
+	if (rid == -1)
+		return (ft_free(&storage));
+	return (storage);
 }
 
 char	*get_next_line(int fd)
@@ -75,16 +83,13 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || fd > OPEN_MAX)
 		return (NULL);
-	storage[fd] = ft_read_file(fd, storage[fd]);
+	if (!storage[fd] || (storage[fd] && !ft_strchr(storage[fd], '\n')))
+		storage[fd] = readbuf(fd, storage[fd]);
 	if (!storage[fd])
 		return (NULL);
-	line = ft_get_line(storage[fd]);
+	line = new_line(storage[fd]);
 	if (!line)
-	{
-		free(storage[fd]);
-		storage[fd] = NULL;
-		return (NULL);
-	}
-	storage[fd] = ft_clean_storage(storage[fd]);
+		return (ft_free(&storage[fd]));
+	storage[fd] = clean_storage(storage[fd]);
 	return (line);
 }
