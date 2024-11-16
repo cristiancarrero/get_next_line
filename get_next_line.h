@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 00:41:32 by gemartin          #+#    #+#             */
-/*   Updated: 2024/10/31 01:55:15 by marvin           ###   ########.fr       */
+/*   Updated: 2024/11/16 01:32:37 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
 
 size_t	ft_strlcpy(char *dst, char *src, size_t dstsize);
 size_t	ft_strlen(char *s);
